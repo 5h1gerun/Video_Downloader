@@ -13,7 +13,7 @@
       <section class="hero">
         <p class="eyebrow">ELECTRON EDITION</p>
         <h1>Video_Downloader</h1>
-        <p class="sub">URL を貼って、保存先を選んで、ワンクリックで実行</p>
+        <p class="sub">URLを貼り付けて、プリセットを選ぶだけでダウンロードできます。</p>
       </section>
 
       <section class="panel">
@@ -30,10 +30,16 @@
           <button id="pick-output" class="btn btn-secondary">参照</button>
         </div>
 
-        <div class="field-row">
+        <div class="field-row preset-row">
           <label class="field field-grow">
-            <span>Format</span>
-            <input id="format-selector" type="text" value="bv*[ext=mp4]+ba[ext=m4a]/b[ext=mp4]/bv*+ba/b" />
+            <span>プリセット</span>
+            <select id="preset-selector">
+              <option value="video-best">高画質 MP4</option>
+              <option value="video-balanced">標準 MP4</option>
+              <option value="audio-mp3">音声 MP3</option>
+              <option value="audio-m4a">音声 M4A</option>
+              <option value="custom">カスタム</option>
+            </select>
           </label>
           <label class="checkbox">
             <input id="audio-only" type="checkbox" />
@@ -54,18 +60,43 @@
         </div>
 
         <label class="field">
-          <span>FFmpeg Path (任意)</span>
+          <span>フォーマット指定（詳細）</span>
+          <input id="format-selector" type="text" value="bv*[ext=mp4]+ba[ext=m4a]/b[ext=mp4]/bv*+ba/b" />
+        </label>
+
+        <label class="field">
+          <span>FFmpeg パス（任意）</span>
           <input id="ffmpeg-location" type="text" placeholder="ffmpeg/bin/ffmpeg.exe など" />
         </label>
 
         <div class="actions">
-          <button id="start" class="btn btn-primary">ダウンロード開始</button>
-          <p id="status" class="status">Ready</p>
+          <button id="start" class="btn btn-primary">この設定で実行</button>
+          <button id="enqueue" class="btn btn-secondary">キューに追加</button>
+          <button id="run-queue" class="btn btn-secondary">キュー実行</button>
+          <p id="status" class="status">準備完了</p>
         </div>
+
+        <section class="sub-panel">
+          <div class="sub-head">
+            <span>ダウンロードキュー</span>
+            <button id="clear-queue" class="btn btn-ghost">待機中を削除</button>
+          </div>
+          <div id="queue-empty" class="empty-note">キューは空です。</div>
+          <ul id="queue-list" class="items"></ul>
+        </section>
+
+        <section class="sub-panel">
+          <div class="sub-head">
+            <span>ダウンロード履歴</span>
+            <button id="clear-history" class="btn btn-ghost">履歴削除</button>
+          </div>
+          <div id="history-empty" class="empty-note">履歴はまだありません。</div>
+          <ul id="history-list" class="items"></ul>
+        </section>
 
         <div class="progress-wrap">
           <div class="progress-head">
-            <span>Progress</span>
+            <span>進捗</span>
             <span id="progress-value">0.0%</span>
           </div>
           <div class="progress-bar">
@@ -75,8 +106,8 @@
 
         <section class="log-panel">
           <div class="log-head">
-            <span>Logs</span>
-            <button id="clear-log" class="btn btn-ghost">Clear</button>
+            <span>ログ</span>
+            <button id="clear-log" class="btn btn-ghost">クリア</button>
           </div>
           <pre id="log"></pre>
         </section>

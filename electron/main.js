@@ -1,4 +1,4 @@
-const { app, BrowserWindow, dialog, ipcMain } = require("electron");
+const { app, BrowserWindow, dialog, ipcMain, shell } = require("electron");
 const { spawn, spawnSync } = require("child_process");
 const fs = require("fs");
 const path = require("path");
@@ -152,6 +152,23 @@ ipcMain.handle("select-output-directory", async () => {
     return null;
   }
   return result.filePaths[0];
+});
+
+ipcMain.handle("open-path", async (_event, targetPath) => {
+  if (!targetPath || typeof targetPath !== "string") {
+    return { ok: false, message: "Invalid path." };
+  }
+
+  try {
+    const resolved = path.resolve(targetPath);
+    const openError = await shell.openPath(resolved);
+    if (openError) {
+      return { ok: false, message: openError };
+    }
+    return { ok: true };
+  } catch (err) {
+    return { ok: false, message: err.message || "Failed to open path." };
+  }
 });
 
 ipcMain.handle("run-download", async (event, params) => {
