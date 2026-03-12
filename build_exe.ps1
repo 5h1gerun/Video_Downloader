@@ -1,7 +1,7 @@
 param(
     [string]$PythonPath = "",
     [string]$CondaEnvName = "Cbot",
-    [string]$IconPath = "C:\Users\sasak\Downloads\DL_exe\app_icon.ico",
+    [string]$IconPath = "app_icon.ico",
     [string]$AppName = "Video_Downloader",
     [string]$EntryPoint = "src/main.py",
     [switch]$Clean,

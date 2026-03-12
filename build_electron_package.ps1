@@ -1,7 +1,7 @@
 param(
     [string]$PythonPath = "",
     [string]$CondaEnvName = "Cbot",
-    [string]$IconPath = "C:\Users\sasak\Downloads\DL_exe\app_icon.ico",
+    [string]$IconPath = "app_icon.ico",
     [bool]$BundleFFmpeg = $true,
     [string]$FFmpegPath = "",
     [bool]$InstallMissing = $true,
