@@ -1,8 +1,8 @@
 {
-  "name": "dl-exe-electron",
+  "name": "video-downloader-electron",
   "version": "1.0.0",
   "private": true,
-  "description": "Electron GUI for DL_exe",
+  "description": "Electron GUI for Video_Downloader",
   "main": "main.js",
   "scripts": {
     "start": "electron .",
@@ -14,8 +14,10 @@
     "electron-builder": "^24.13.3"
   },
   "build": {
-    "appId": "com.sasak.video_downloader",
-    "productName": "Video Downloader",
+    "appId": "com.video_downloader.app",
+    "productName": "Video_Downloader",
+    "executableName": "Video_Downloader_GUI",
+    "artifactName": "Video_Downloader_Setup_${version}.${ext}",
     "asar": true,
     "files": [
       "main.js",
@@ -40,6 +42,17 @@
       "target": [
         "nsis"
       ]
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true,
+      "allowElevation": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "runAfterFinish": true,
+      "shortcutName": "Video_Downloader",
+      "uninstallDisplayName": "Video_Downloader"
     }
   }
 }

@@ -180,6 +180,12 @@ npm run dist:win
 ```
 
 Outputs are generated under `electron/release/`.
+Installed app entry point is `Video_Downloader_GUI.exe` (GUI).
+Installer is assisted UI style (wizard with install directory selection).
+Uninstaller is generated automatically and available from:
+- Windows Settings > Apps > Installed apps
+- Start menu entry created by installer
+- Install directory (`Uninstall Video_Downloader.exe`)
 
 Or run all steps (backend build + electron-builder) from project root:
 

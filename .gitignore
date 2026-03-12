@@ -211,3 +211,4 @@ electron/package-lock.json
 electron/release/
 electron/backend/*
 !electron/backend/.gitkeep
+electron/package.json
