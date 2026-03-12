@@ -1,0 +1,58 @@
+{
+  "name": "video-downloader-electron",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Electron GUI for Video_Downloader",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "check:backend": "node scripts/check-backend.js",
+    "dist:win": "npm run check:backend && electron-builder --win nsis"
+  },
+  "devDependencies": {
+    "electron": "^37.2.0",
+    "electron-builder": "^24.13.3"
+  },
+  "build": {
+    "appId": "com.video_downloader.app",
+    "productName": "Video_Downloader",
+    "executableName": "Video_Downloader_GUI",
+    "artifactName": "Video_Downloader_Setup_${version}.${ext}",
+    "asar": true,
+    "files": [
+      "main.js",
+      "preload.js",
+      "renderer.js",
+      "index.html",
+      "styles.css"
+    ],
+    "extraResources": [
+      {
+        "from": "backend",
+        "to": "backend",
+        "filter": [
+          "**/*"
+        ]
+      }
+    ],
+    "directories": {
+      "output": "release"
+    },
+    "win": {
+      "target": [
+        "nsis"
+      ]
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true,
+      "allowElevation": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "runAfterFinish": true,
+      "shortcutName": "Video_Downloader",
+      "uninstallDisplayName": "Video_Downloader"
+    }
+  }
+}

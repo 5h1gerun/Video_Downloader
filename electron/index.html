@@ -1,0 +1,87 @@
+﻿<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Video_Downloader (Electron)</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="bg-shape bg-shape-1"></div>
+    <div class="bg-shape bg-shape-2"></div>
+    <main class="layout">
+      <section class="hero">
+        <p class="eyebrow">ELECTRON EDITION</p>
+        <h1>Video_Downloader</h1>
+        <p class="sub">URL を貼って、保存先を選んで、ワンクリックで実行</p>
+      </section>
+
+      <section class="panel">
+        <label class="field">
+          <span>URL</span>
+          <input id="url" type="text" placeholder="https://www.youtube.com/watch?v=..." />
+        </label>
+
+        <div class="field-row">
+          <label class="field field-grow">
+            <span>保存先</span>
+            <input id="output" type="text" />
+          </label>
+          <button id="pick-output" class="btn btn-secondary">参照</button>
+        </div>
+
+        <div class="field-row">
+          <label class="field field-grow">
+            <span>Format</span>
+            <input id="format-selector" type="text" value="bv*[ext=mp4]+ba[ext=m4a]/b[ext=mp4]/bv*+ba/b" />
+          </label>
+          <label class="checkbox">
+            <input id="audio-only" type="checkbox" />
+            <span>音声のみ</span>
+          </label>
+          <label class="field">
+            <span>Audio</span>
+            <select id="audio-format">
+              <option>mp3</option>
+              <option>m4a</option>
+              <option>aac</option>
+              <option>wav</option>
+              <option>opus</option>
+              <option>vorbis</option>
+              <option>flac</option>
+            </select>
+          </label>
+        </div>
+
+        <label class="field">
+          <span>FFmpeg Path (任意)</span>
+          <input id="ffmpeg-location" type="text" placeholder="ffmpeg/bin/ffmpeg.exe など" />
+        </label>
+
+        <div class="actions">
+          <button id="start" class="btn btn-primary">ダウンロード開始</button>
+          <p id="status" class="status">Ready</p>
+        </div>
+
+        <div class="progress-wrap">
+          <div class="progress-head">
+            <span>Progress</span>
+            <span id="progress-value">0.0%</span>
+          </div>
+          <div class="progress-bar">
+            <div id="progress-fill"></div>
+          </div>
+        </div>
+
+        <section class="log-panel">
+          <div class="log-head">
+            <span>Logs</span>
+            <button id="clear-log" class="btn btn-ghost">Clear</button>
+          </div>
+          <pre id="log"></pre>
+        </section>
+      </section>
+    </main>
+    <script src="./renderer.js"></script>
+  </body>
+</html>

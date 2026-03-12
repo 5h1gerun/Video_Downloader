@@ -205,3 +205,10 @@ cython_debug/
 marimo/_static/
 marimo/_lsp/
 __marimo__/
+# Electron
+electron/node_modules/
+electron/package-lock.json
+electron/release/
+electron/backend/*
+!electron/backend/.gitkeep
+electron/package.json
