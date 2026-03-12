@@ -261,6 +261,7 @@ function finishJob(job, ok, result) {
   job.errorMessage = ok ? "" : result?.message || "不明なエラー";
 
   moveToHistory(job);
+  state.queue = state.queue.filter((entry) => entry.id !== job.id);
   saveState();
   renderQueue();
 }
@@ -374,7 +375,7 @@ function renderQueue() {
     const actions = document.createElement("div");
     actions.className = "item-actions";
 
-    if (job.status === "queued" && !isRunning) {
+    if (job.status !== "running") {
       const removeButton = document.createElement("button");
       removeButton.className = "btn btn-ghost";
       removeButton.textContent = "削除";
@@ -530,15 +531,15 @@ runQueueButton.addEventListener("click", async () => {
 });
 
 clearQueueButton.addEventListener("click", () => {
-  if (isRunning) {
-    setStatus("実行中は待機キュー削除できません。", true);
-    return;
-  }
-
-  state.queue = state.queue.filter((job) => job.status !== "queued");
+  const before = state.queue.length;
+  state.queue = state.queue.filter((job) => job.status === "running");
   saveState();
   renderQueue();
-  setStatus("待機中キューを削除しました。");
+  if (before === state.queue.length) {
+    setStatus("削除対象のキューはありません。");
+    return;
+  }
+  setStatus("キューを削除しました。");
 });
 
 clearHistoryButton.addEventListener("click", () => {
