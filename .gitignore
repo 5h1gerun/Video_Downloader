@@ -208,3 +208,6 @@ __marimo__/
 # Electron
 electron/node_modules/
 electron/package-lock.json
+electron/release/
+electron/backend/*
+!electron/backend/.gitkeep

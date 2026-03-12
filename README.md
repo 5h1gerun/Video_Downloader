@@ -1,6 +1,6 @@
-# DL_exe
+# Video_Downloader
 
-`yt-dlp` を利用して動画をダウンロードする Windows 向け `exe` アプリを開発するプロジェクトです。  
+`yt-dlp` を利用して動画をダウンロードする Windows 向け `exe` アプリを開発するプロジェクトです。
 現在は CLI ベースの MVP を実装済みで、後から GUI 対応できる構成を目指します。
 
 ## 目的
@@ -120,6 +120,7 @@ DL_exe/
 ```
 
 Behavior in this project:
+
 - If `--ffmpeg-location` is omitted, the app automatically checks these paths:
   1. `ffmpeg/bin/ffmpeg.exe`
   2. `ffmpeg/ffmpeg.exe`
@@ -128,6 +129,7 @@ Behavior in this project:
 - This works for both CLI and GUI.
 
 Distribution checklist:
+
 1. Include the original FFmpeg license files from your build.
 2. Keep source URL + version in `THIRD_PARTY_NOTICES.txt`.
 3. Confirm whether your FFmpeg build is LGPL or GPL and comply accordingly.
@@ -145,6 +147,7 @@ npm start
 ```
 
 Notes:
+
 - The Electron app calls `src/main.py` as backend.
 - Python executable resolution order:
   1. `DL_EXE_PYTHON` environment variable
@@ -152,3 +155,42 @@ Notes:
   3. `.venv\Scripts\python.exe`
   4. `python` on PATH
 - Existing CLI remains available.
+
+## Electron packaged distribution (electron-builder)
+
+For full distribution, package Electron separately and bundle the Python backend as a resource.
+
+1. Build backend and export it into `electron/backend`:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\build_exe.ps1 -OneDir -ExportToElectronBackend -Clean
+```
+
+2. Install Electron dependencies:
+
+```powershell
+cd electron
+npm install
+```
+
+3. Build installer package:
+
+```powershell
+npm run dist:win
+```
+
+Outputs are generated under `electron/release/`.
+
+Or run all steps (backend build + electron-builder) from project root:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\build_electron_package.ps1 -Clean
+```
+
+To bundle FFmpeg automatically:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\build_exe.ps1 -OneDir -BundleFFmpeg -Clean
+# or explicit path
+powershell -ExecutionPolicy Bypass -File .\build_exe.ps1 -OneDir -BundleFFmpeg -FFmpegPath "C:\ffmpeg\bin" -Clean
+```

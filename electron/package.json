@@ -5,9 +5,41 @@
   "description": "Electron GUI for DL_exe",
   "main": "main.js",
   "scripts": {
-    "start": "electron ."
+    "start": "electron .",
+    "check:backend": "node scripts/check-backend.js",
+    "dist:win": "npm run check:backend && electron-builder --win nsis"
   },
   "devDependencies": {
-    "electron": "^37.2.0"
+    "electron": "^37.2.0",
+    "electron-builder": "^24.13.3"
+  },
+  "build": {
+    "appId": "com.sasak.video_downloader",
+    "productName": "Video Downloader",
+    "asar": true,
+    "files": [
+      "main.js",
+      "preload.js",
+      "renderer.js",
+      "index.html",
+      "styles.css"
+    ],
+    "extraResources": [
+      {
+        "from": "backend",
+        "to": "backend",
+        "filter": [
+          "**/*"
+        ]
+      }
+    ],
+    "directories": {
+      "output": "release"
+    },
+    "win": {
+      "target": [
+        "nsis"
+      ]
+    }
   }
 }

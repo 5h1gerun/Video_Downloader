@@ -1,6 +1,7 @@
 ﻿from __future__ import annotations
 
 import argparse
+import os
 import shutil
 import subprocess
 import sys
@@ -80,32 +81,69 @@ def build_parser() -> argparse.ArgumentParser:
     return parser
 
 
+def resolve_electron_dir() -> Path | None:
+    candidates: list[Path] = []
+
+    if getattr(sys, "frozen", False):
+        meipass = getattr(sys, "_MEIPASS", None)
+        if meipass:
+            candidates.append(Path(meipass) / "electron")
+        candidates.append(Path(sys.executable).resolve().parent / "electron")
+    else:
+        candidates.append(Path(__file__).resolve().parent.parent / "electron")
+
+    for electron_dir in candidates:
+        if (electron_dir / "package.json").exists():
+            return electron_dir
+    return None
+
+
+def resolve_electron_executable(electron_dir: Path) -> str | None:
+    candidates = [
+        electron_dir / "node_modules" / "electron" / "dist" / "electron.exe",
+        electron_dir / "node_modules" / ".bin" / "electron.cmd",
+        electron_dir / "node_modules" / ".bin" / "electron",
+    ]
+    for candidate in candidates:
+        if candidate.exists():
+            return str(candidate)
+    return None
+
+
 def launch_electron_gui() -> int:
-    project_root = Path(__file__).resolve().parent.parent
-    electron_dir = project_root / "electron"
-    package_json = electron_dir / "package.json"
-
-    if not package_json.exists():
-        print(f"[error] Electron app not found: {package_json}")
+    electron_dir = resolve_electron_dir()
+    if not electron_dir:
+        print("[error] Electron app not found. Bundle electron files or place ./electron next to exe.")
         return 1
 
+    child_env = dict(os.environ)
+    if getattr(sys, "frozen", False):
+        child_env["DL_EXE_BACKEND_EXE"] = str(Path(sys.executable).resolve())
+
+    electron_exe = resolve_electron_executable(electron_dir)
+    if electron_exe:
+        result = subprocess.run(
+            [electron_exe, str(electron_dir)],
+            cwd=electron_dir,
+            env=child_env,
+            check=False,
+        )
+        return result.returncode
+
+    # Fallback for development environments.
     npm = shutil.which("npm.cmd") or shutil.which("npm")
-    if not npm:
-        print("[error] npm was not found. Please install Node.js.")
-        return 1
+    if npm:
+        result = subprocess.run(
+            [npm, "start"],
+            cwd=electron_dir,
+            env=child_env,
+            check=False,
+        )
+        return result.returncode
 
-    node_modules = electron_dir / "node_modules"
-    if not node_modules.exists():
-        print("[error] Electron dependencies are not installed.")
-        print(f"[hint] Run: cd {electron_dir} && npm install")
-        return 1
-
-    result = subprocess.run(
-        [npm, "start"],
-        cwd=electron_dir,
-        check=False,
-    )
-    return result.returncode
+    print("[error] Electron runtime not found.")
+    print("[hint] Bundle node_modules/electron with the exe or install Node.js and run npm install in electron/.")
+    return 1
 
 
 def main() -> int:

@@ -6,7 +6,6 @@ const audioFormatInput = document.getElementById("audio-format");
 const ffmpegInput = document.getElementById("ffmpeg-location");
 const pickOutputButton = document.getElementById("pick-output");
 const startButton = document.getElementById("start");
-const updateButton = document.getElementById("update");
 const clearLogButton = document.getElementById("clear-log");
 const statusNode = document.getElementById("status");
 const logNode = document.getElementById("log");
@@ -42,7 +41,6 @@ function setProgress(value) {
 
 function setBusy(busy) {
   startButton.disabled = busy;
-  updateButton.disabled = busy;
 }
 
 audioOnlyInput.addEventListener("change", () => {
@@ -88,24 +86,6 @@ startButton.addEventListener("click", async () => {
     appendLog("=== Completed successfully ===");
   } else {
     setStatus(`Failed (code: ${result.code})`, true);
-    if (result.message) {
-      appendLog(result.message, "stderr");
-    }
-  }
-});
-
-updateButton.addEventListener("click", async () => {
-  setBusy(true);
-  setStatus("Updating yt-dlp...");
-  appendLog("=== Updating yt-dlp ===");
-
-  const result = await window.dlExeApi.updateYtDlp();
-  setBusy(false);
-
-  if (result.ok) {
-    setStatus("yt-dlp updated");
-  } else {
-    setStatus(`Update failed (code: ${result.code})`, true);
     if (result.message) {
       appendLog(result.message, "stderr");
     }
