@@ -217,6 +217,11 @@ function appendLog(line, stream = "stdout") {
     lastFinishedPath = finishedMatch[1].trim();
     setProgress(100);
   }
+
+  const resultMatch = line.match(/\[result\]\s*(.+)$/);
+  if (resultMatch) {
+    lastFinishedPath = resultMatch[1].trim();
+  }
 }
 
 function updateJobStatus(jobId, status, extras = {}) {
@@ -252,7 +257,7 @@ function moveToHistory(job) {
 function finishJob(job, ok, result) {
   job.status = ok ? "done" : "failed";
   job.finishedAt = new Date().toISOString();
-  job.resultPath = ok ? lastFinishedPath : "";
+  job.resultPath = ok ? lastFinishedPath || job.output : "";
   job.errorMessage = ok ? "" : result?.message || "不明なエラー";
 
   moveToHistory(job);

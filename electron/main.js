@@ -161,7 +161,16 @@ ipcMain.handle("open-path", async (_event, targetPath) => {
 
   try {
     const resolved = path.resolve(targetPath);
-    const openError = await shell.openPath(resolved);
+    if (fs.existsSync(resolved)) {
+      const stat = fs.statSync(resolved);
+      if (stat.isFile()) {
+        shell.showItemInFolder(resolved);
+        return { ok: true };
+      }
+    }
+
+    const openTarget = fs.existsSync(resolved) ? resolved : path.dirname(resolved);
+    const openError = await shell.openPath(openTarget);
     if (openError) {
       return { ok: false, message: openError };
     }

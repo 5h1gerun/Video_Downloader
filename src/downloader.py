@@ -32,6 +32,20 @@ def _make_progress_hook(log: LogFunc, progress_callback: ProgressFunc | None) ->
     return _progress_hook
 
 
+def _make_postprocessor_hook(log: LogFunc) -> Callable[[dict], None]:
+    def _postprocessor_hook(status_data: dict) -> None:
+        if status_data.get("status") != "finished":
+            return
+
+        info_dict = status_data.get("info_dict") or {}
+        final_path = info_dict.get("filepath")
+        if final_path:
+            # Dedicated marker consumed by Electron for history/open-path.
+            log(f"[result] {final_path}")
+
+    return _postprocessor_hook
+
+
 def build_ydl_options(
     opts: DownloadOptions,
     log: LogFunc = print,
@@ -43,6 +57,7 @@ def build_ydl_options(
         "noplaylist": True,
         "format": opts.format_selector,
         "progress_hooks": [_make_progress_hook(log, progress_callback)],
+        "postprocessor_hooks": [_make_postprocessor_hook(log)],
         "js_runtimes": {"node": {}},
         "concurrent_fragment_downloads": max(1, int(opts.concurrent_fragments)),
         "quiet": True,
