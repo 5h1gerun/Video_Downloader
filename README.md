@@ -99,3 +99,56 @@ python src/main.py --update-yt-dlp
 ```powershell
 python src/main.py --update-yt-dlp --pin-requirements
 ```
+
+## FFmpeg bundling for distribution
+
+You can redistribute this app with FFmpeg in the project/package root.
+
+Recommended layout:
+
+```text
+DL_exe/
+  DL_exe.exe (or python entry)
+  ffmpeg/
+    bin/
+      ffmpeg.exe
+      ffprobe.exe
+    licenses/
+      LICENSE.txt
+      COPYING.LGPLv2.1.txt (or corresponding GPL/LGPL files)
+      THIRD_PARTY_NOTICES.txt
+```
+
+Behavior in this project:
+- If `--ffmpeg-location` is omitted, the app automatically checks these paths:
+  1. `ffmpeg/bin/ffmpeg.exe`
+  2. `ffmpeg/ffmpeg.exe`
+  3. `ffmpeg/bin`
+  4. `ffmpeg`
+- This works for both CLI and GUI.
+
+Distribution checklist:
+1. Include the original FFmpeg license files from your build.
+2. Keep source URL + version in `THIRD_PARTY_NOTICES.txt`.
+3. Confirm whether your FFmpeg build is LGPL or GPL and comply accordingly.
+
+## Electron GUI
+
+A desktop GUI using Electron is available under `electron/`.
+
+Setup:
+
+```powershell
+cd electron
+npm install
+npm start
+```
+
+Notes:
+- The Electron app calls `src/main.py` as backend.
+- Python executable resolution order:
+  1. `DL_EXE_PYTHON` environment variable
+  2. `%CONDA_PREFIX%\python.exe`
+  3. `.venv\Scripts\python.exe`
+  4. `python` on PATH
+- Existing CLI remains available.
